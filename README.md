@@ -9,9 +9,9 @@ git log
 // Repository -->
 
 // Add, commit and push the files to your branch
-git add <file_name> ,
+git add \<file_name\> ,
 git commit -m "Description" ,
-git push origin <branch_name> ,
+git push origin \<branch_name\> ,
 
 // Pull your files from the github repository
 git pull ,
@@ -28,5 +28,5 @@ git ls-files --deleted -z | xargs -0 git rm
 
 // Branches -->
 git branch ,
-git checkout <branch_name> ,
-git merge <branch_name>
+git checkout \<branch_name\> ,
+git merge \<branch_name\>

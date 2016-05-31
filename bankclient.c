@@ -1,12 +1,11 @@
-/* inet_str_client.c: Internet stream sockets client */
 #include <stdio.h>
-#include <sys/types.h>	     /* sockets */
-#include <sys/socket.h>	     /* sockets */
-#include <netinet/in.h>	     /* internet sockets */
-#include <unistd.h>          /* read, write, close */
-#include <netdb.h>	         /* gethostbyaddr */
-#include <stdlib.h>	         /* exit */
-#include <string.h>	         /* strlen */
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <stdlib.h>
+#include <string.h>	   
 
 void perror_exit(char *message);
 

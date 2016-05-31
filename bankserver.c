@@ -1,14 +1,13 @@
-/*inet_str_server.c: Internet stream sockets server */
 #include <stdio.h>
-#include <sys/wait.h>	     /* sockets */
-#include <sys/types.h>	     /* sockets */
-#include <sys/socket.h>	     /* sockets */
-#include <netinet/in.h>	     /* internet sockets */
-#include <netdb.h>	         /* gethostbyaddr */
-#include <unistd.h>	         /* fork */
-#include <stdlib.h>	         /* exit */
-#include <ctype.h>	         /* toupper */
-#include <signal.h>          /* signal */
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <signal.h>
 void child_server(int newsock);
 void perror_exit(char *message);
 void sigchld_handler (int sig);
@@ -20,8 +19,11 @@ int main(int argc, char *argv[]) {
     struct sockaddr *serverptr=(struct sockaddr *)&server;
     struct sockaddr *clientptr=(struct sockaddr *)&client;
     // struct hostent *rem;
+
     if (argc != 2) {
-        printf("Please give port number\n");exit(1);}
+        printf("Please give port number\n");
+        exit(1);
+    }
     port = atoi(argv[1]);
     /* Reap dead children asynchronously */
     signal(SIGCHLD, sigchld_handler);
@@ -35,7 +37,10 @@ int main(int argc, char *argv[]) {
     if (bind(sock, serverptr, sizeof(server)) < 0)
         perror_exit("bind");
     /* Listen for connections */
-    if (listen(sock, 5) < 0) perror_exit("listen");
+    if (listen(sock, 5) < 0) {
+      perror_exit("listen");
+    }
+
     printf("Listening for connections to port %d\n", port);
     while (1) {
         /* accept connection */
