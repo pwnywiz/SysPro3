@@ -1,10 +1,10 @@
 #Makefile
 OBJS1 = bankserver.o
-OBJS2 = bankclient.o
+OBJS2 = bankclient.o InputFunctions.o
 SOURCE1 = bankserver.c
-SOURCE2 = bankclient.c
-#HEADER =
-#COMPHEADER =
+SOURCE2 = bankclient.c InputFunctions.c
+HEADER = InputFunctions.h
+COMPHEADER = InputFunctions.h.gch
 OUT1 = bankserver
 OUT2 = bankclient
 CC = gcc
@@ -22,6 +22,9 @@ bankserver.o: bankserver.c
 
 bankclient.o: bankclient.c
 	$(CC) $(FLAGS) bankclient.c
+
+InputFunctions.o: InputFunctions.c
+	$(CC) $(FLAGS) InputFunctions.c
 
 # clean
 clean:

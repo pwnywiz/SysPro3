@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <signal.h>
+
+#define HASH_SIZE 10
+
 void child_server(int newsock);
 void perror_exit(char *message);
 void sigchld_handler (int sig);
@@ -60,6 +63,8 @@ int main(int argc, char *argv[]) {
 
 void child_server(int newsock) {
     char buf[1];
+    char size[4];
+    read(newsock, size, 4);
     while(read(newsock, buf, 1) > 0) {  /* Receive 1 char */
     	putchar(buf[0]);           /* Print received char */
     	/* Capitalize character */
