@@ -63,7 +63,6 @@ int main(int argc, char *argv[]) {
     perror_exit("listen");
   }
 
-  printf("Listening for connections to port %d\n", port);
   while (1) {
       /* accept connection */
   	if ((newsock = accept(server_socket, clientptr, &clientlen)) < 0) perror_exit("accept");
