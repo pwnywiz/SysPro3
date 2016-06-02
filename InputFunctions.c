@@ -38,7 +38,7 @@ int FileExecute(int fd, char *str) {
   return 0;
 }
 
-int write_command(int fd, char* message) {/* Write formated data */
+int write_command(int fd, char* message) {/* Write formated commands */
 	char temp;
   int length = 0;
 
@@ -54,7 +54,7 @@ int write_command(int fd, char* message) {/* Write formated data */
 	return length;		/* Return size of string */
 }
 
-int read_data (int fd, char *buffer) {/* Read formated data */
+int read_command(int fd, char *buffer) {/* Read formated commands */
 	char temp;
   int i = 0;
   int length = 0;
@@ -62,7 +62,6 @@ int read_data (int fd, char *buffer) {/* Read formated data */
 	if ( read ( fd, &temp, 1 ) < 0 )	{/* Get length of string */
 		exit (-3);
   }
-
 	length = temp;
 	while ( i < length ) { /* Read $length chars */
 		if ( i < ( i+= read (fd, &buffer[i], length - i))) {

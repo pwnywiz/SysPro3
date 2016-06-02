@@ -2,4 +2,3 @@ add_account aa
 add_transfer bb
 add_multi_transfer cc
 add_account hh
-exit

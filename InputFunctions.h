@@ -5,7 +5,7 @@
 
 int FileExecute(int fd, char *str);
 int write_command(int fd, char* message);
-int read_data (int fd, char *buffer);
+int read_command(int fd, char *buffer);
 // int linesize(FILE *const fp);
 
 #endif /* INPUTFUNCTIONS_H_ */
