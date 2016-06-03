@@ -9,11 +9,12 @@ OUT1 = bankserver
 OUT2 = bankclient
 CC = gcc
 FLAGS = -g -c
+THREAD = -lpthread
 
 # -g option enables debugging mode
 # -c flag generates object code for separate files
 all: $(OBJS1) $(OBJS2)
-	gcc -o $(OUT1) $(SOURCE1)
+	gcc -o $(OUT1) $(SOURCE1) $(THREAD)
 	gcc -o $(OUT2) $(SOURCE2)
 
 # create / compile the individual files separately
