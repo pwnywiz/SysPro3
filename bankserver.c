@@ -10,6 +10,7 @@
 #include <ctype.h>
 
 #include "ClientQueue.h"
+#include "HashTable.h"
 
 #define HASH_SIZE 10
 

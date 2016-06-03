@@ -48,7 +48,7 @@ int get_qnode(qnode **n) {
 }
 
 //  Frees the list allocated memory
-void destroy_list(qnode **n) {
+void destroy_qlist(qnode **n) {
   qnode *current = *n;
   qnode *temp;
   while (current != NULL) {
@@ -73,7 +73,7 @@ int find_qnode(qnode *n, int x) {
 }
 
 //  Prints the whole list
-void print_list(qnode *n) {
+void print_qlist(qnode *n) {
     qnode *current = n;
 
     while (current != NULL) {
