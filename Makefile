@@ -1,10 +1,10 @@
 #Makefile
-OBJS1 = bankserver.o ClientQueue.o HashTable.o AccountList.o
+OBJS1 = bankserver.o ClientQueue.o HashTable.o AccountList.o BaseFunctions.o
 OBJS2 = bankclient.o InputFunctions.o
-SOURCE1 = bankserver.c ClientQueue.c HashTable.c AccountList.c
+SOURCE1 = bankserver.c ClientQueue.c HashTable.c AccountList.c BaseFunctions.c
 SOURCE2 = bankclient.c InputFunctions.c
-HEADER = InputFunctions.h ClientQueue.h HashTable.h AccountList.h
-COMPHEADER = InputFunctions.h.gch ClientQueue.h.gch HashTable.h.gch AccountList.h.gch
+HEADER = InputFunctions.h ClientQueue.h HashTable.h AccountList.h BaseFunctions.h
+COMPHEADER = InputFunctions.h.gch ClientQueue.h.gch HashTable.h.gch AccountList.h.gch BaseFunctions.h.gch
 OUT1 = bankserver
 OUT2 = bankclient
 CC = gcc
@@ -35,6 +35,9 @@ HashTable.o: HashTable.c
 
 AccountList.o: AccountList.c
 	$(CC) $(FLAGS) AccountList.c
+
+BaseFunctions.o: BaseFunctions.c
+	$(CC) $(FLAGS) BaseFunctions.c
 
 # clean
 clean:

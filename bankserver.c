@@ -1,23 +1,13 @@
-#include <stdio.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
 
-#include "ClientQueue.h"
-#include "HashTable.h"
+#include "BaseFunctions.h"
 
-#define HASH_SIZE 10
-
-void child_server(int newsock);
-int write_command(int fd, char* message);
-int read_command (int fd, char *buffer);
-void perror_exit(char *message);
+#define HASH_SIZE 100
 
 int main(int argc, char *argv[]) {
   if (argc != 7) {
@@ -27,15 +17,14 @@ int main(int argc, char *argv[]) {
 
   int i;
   int port;
-  int queue_size;
+  int new_client;
   int server_socket;
   int threadpool_size;
-  int newsock;
+  pthread_t *consumers;
   struct sockaddr_in server, client;
   socklen_t clientlen = sizeof(client);
   struct sockaddr *serverptr=(struct sockaddr *)&server;
   struct sockaddr *clientptr=(struct sockaddr *)&client;
-  // struct hostent *rem;
 
   //  Save the -p, -s and -q arguments in any order
   for (i = 1; i < argc; i++) {
@@ -49,6 +38,21 @@ int main(int argc, char *argv[]) {
       queue_size = atoi(argv[i+1]);
     }
   }
+  client_queue = NULL;
+  queue_count = 0;
+
+  //  Create a thread array of size threadpool_size
+  //  and a mutex array with 1 mutex per 10 hashtable buckets
+  consumers = malloc(threadpool_size*sizeof(pthread_t));
+  transaction_mtx = malloc((HASH_SIZE/10)*sizeof(pthread_mutex_t));
+
+  //  Initialization of mutexes and condition variables
+  for (i = 0; i < HASH_SIZE/10; i++) {
+    pthread_mutex_init(&transaction_mtx[i], 0);
+  }
+  pthread_mutex_init(&mtx, 0);
+	pthread_cond_init(&queue_nonempty, 0);
+	pthread_cond_init(&queue_nonfull, 0);
 
   /* Create socket */
   if ((server_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -64,74 +68,22 @@ int main(int argc, char *argv[]) {
     perror_exit("listen");
   }
 
+  for (i = 0; i < threadpool_size; i++) {
+    pthread_create(&consumers[i], 0, serve_client, 0);
+  }
+
+  //  Master Thread accepts connections and adds them to the queue
   while (1) {
-      /* accept connection */
-  	if ((newsock = accept(server_socket, clientptr, &clientlen)) < 0) perror_exit("accept");
-  	/* Find client's address */
-  	printf("Accepted connection\n");
-  	switch (fork()) {    /* Create child for serving client */
-  	case -1:     /* Error */
-  	    perror("fork"); break;
-  	case 0:	     /* Child process */
-  	    close(server_socket); child_server(newsock);
-  	    exit(0);
-  	}
-  	close(newsock); /* parent closes socket to client */
-  }
-}
-
-void child_server(int newsock) {
-  char buf[2048];
-  // read(newsock, size, 4);
-  // while(read(newsock, buf, 1) > 0) {  /* Receive 1 char */
-  // 	putchar(buf[0]);           /* Print received char */
-  // 	/* Capitalize character */
-  // 	buf[0] = toupper(buf[0]);
-  // 	/* Reply */
-  // 	if (write(newsock, buf, 1) < 0)
-  // 	    perror_exit("write");
-  // }
-  read_command(newsock,buf);
-
-  printf("Closing connection.\n");
-  close(newsock);	  /* Close socket */
-}
-
-int write_command(int fd, char* message) {/* Write formated commands */
-  char temp;
-  int length = 0;
-
-	length = strlen(message) + 1;	/* Find length of string */
-	temp = length;
-	if(write (fd, &temp, 1) < 0) {	/* Send length first */
-		exit (-2);
-  }
-	if(write (fd, message, length) < 0) {	/* Send string */
-		exit (-2);
-  }
-
-	return length;		/* Return size of string */
-}
-
-int read_command (int fd, char *buffer) {/* Read formated commands */
-	char temp;
-  int i = 0;
-  int length = 0;
-
-	if ( read ( fd, &temp, 1 ) < 0 )	{/* Get length of string */
-		exit (-3);
-  }
-	length = temp;
-	while ( i < length ) { /* Read $length chars */
-		if ( i < ( i+= read (fd, &buffer[i], length - i))) {
-			exit (-3);
+    if ((new_client = accept(server_socket, clientptr, &clientlen)) < 0) {
+      perror_exit("accept");
     }
+    pthread_mutex_lock(&mtx);
+    while (queue_count >= queue_size) {
+      pthread_cond_wait(&queue_nonfull, &mtx);
+    }
+    add_qnode(&client_queue,new_client);
+    queue_count++;
+    pthread_cond_broadcast(&queue_nonempty);
+    pthread_mutex_unlock(&mtx);
   }
-
-	return i;	/* Return size of string */
-}
-
-void perror_exit(char *message) {
-  perror(message);
-  exit(EXIT_FAILURE);
 }
