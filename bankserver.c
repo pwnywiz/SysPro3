@@ -7,8 +7,6 @@
 
 #include "BaseFunctions.h"
 
-#define HASH_SIZE 100
-
 int main(int argc, char *argv[]) {
   if (argc != 7) {
     printf("Not enough arguments\n");
@@ -47,7 +45,7 @@ int main(int argc, char *argv[]) {
   transaction_mtx = malloc((HASH_SIZE/10)*sizeof(pthread_mutex_t));
 
   //  Initialization of mutexes and condition variables
-  for (i = 0; i < HASH_SIZE/10; i++) {
+  for (i = 0; i < HASH_SIZE/MUTEX_SPLIT; i++) {
     pthread_mutex_init(&transaction_mtx[i], 0);
   }
   pthread_mutex_init(&mtx, 0);

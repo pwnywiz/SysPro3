@@ -10,6 +10,9 @@
 #include "ClientQueue.h"
 #include "HashTable.h"
 
+#define HASH_SIZE 100
+#define MUTEX_SPLIT 10
+
 int queue_size;
 int queue_count;
 pthread_mutex_t mtx;
