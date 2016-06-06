@@ -19,9 +19,12 @@ pthread_mutex_t mtx;
 pthread_mutex_t *transaction_mtx;
 pthread_cond_t queue_nonempty;
 pthread_cond_t queue_nonfull;
+Hashtable *hash;
 qnode *client_queue;
 
 void *serve_client(void * ptr);
+int TransactionsExecute(int fd, Hashtable *ht);
+int insert_sorted(int *arr, int size, int value);
 int write_command(int fd, char* message);
 int read_command (int fd, char *buffer);
 void perror_exit(char *message);

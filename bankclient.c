@@ -75,28 +75,13 @@ int main(int argc, char *argv[]) {
 
   fclose(fp);
 
-  //  User Input
-  // do {
-  // 	printf("Insert any other commands from stdin\n");
-  // 	fgets(buf, sizeof(buf), stdin);	/* Read from stdin*/
-  // 	for(i=0; buf[i] != '\0'; i++) { /* For every char */
-  // 	    /* Send i-th character */
-  //     	if (write(server_socket, buf + i, 1) < 0)
-  //     	   perror_exit("write");
-  //         /* receive i-th character transformed */
-  //     	if (read(server_socket, buf + i, 1) < 0)
-  //     	    perror_exit("read");
-  // 	}
-  // 	printf("Received string: %s", buf);
-  // } while (strcmp(buf, "END\n") != 0); /* Finish on "end" */
-
   printf("Insert any other commands from stdin\n");
   printf("-- Exit with ctrl D --\n");
   while (fgets(commands, sizeof(commands), stdin) != NULL) {
     FileExecute(server_socket, commands);
   }
 
-  close(server_socket);                 /* Close socket and exit */
+  close(server_socket);  /* Close socket and exit */
 }
 
 void perror_exit(char *message)

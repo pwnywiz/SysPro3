@@ -12,6 +12,8 @@ typedef struct Hashtable Hashtable;
 
 Hashtable *hash_create(int n);
 void hash_insert(Hashtable *ht, int init_amount, char *id);
+void hash_transfer(Hashtable *ht, int amount, char *x, char *y);
+int hash_getBalance(Hashtable *ht, char *id);
 void hash_delete(Hashtable *ht, char *id);
 void hash_destroy(Hashtable *ht);
 tnode *hash_getBucket(Hashtable *ht, char *id);

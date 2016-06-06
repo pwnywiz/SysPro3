@@ -39,10 +39,12 @@ int main(int argc, char *argv[]) {
   client_queue = NULL;
   queue_count = 0;
 
+  hash = hash_create(HASH_SIZE);
+
   //  Create a thread array of size threadpool_size
   //  and a mutex array with 1 mutex per 10 hashtable buckets
   consumers = malloc(threadpool_size*sizeof(pthread_t));
-  transaction_mtx = malloc((HASH_SIZE/10)*sizeof(pthread_mutex_t));
+  transaction_mtx = malloc((HASH_SIZE/MUTEX_SPLIT)*sizeof(pthread_mutex_t));
 
   //  Initialization of mutexes and condition variables
   for (i = 0; i < HASH_SIZE/MUTEX_SPLIT; i++) {

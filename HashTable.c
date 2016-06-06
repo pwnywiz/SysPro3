@@ -27,6 +27,25 @@ void hash_insert(Hashtable *ht, int init_amount, char *id) {
   add_node(&(ht->hashtable[bucket]), init_amount, id);
 }
 
+//  Transfer an amount from account y to x
+//  and then delete the same amount from account y
+void hash_transfer(Hashtable *ht, int amount, char *x, char *y) {
+  int n = ht->tables;
+  int bucket1 = hash_fillBucket(n, x);
+  int bucket2 = hash_fillBucket(n, y);
+
+  add_amount(ht->hashtable[bucket1], amount, x, y);
+  decrease_amount(ht->hashtable[bucket2], amount, y);
+}
+
+//  Get the balance of the account with name id
+int hash_getBalance(Hashtable *ht, char *id) {
+  int n = ht->tables;
+  int bucket = hash_fillBucket(n, id);
+
+  return get_balance(ht->hashtable[bucket], id);
+}
+
 //  Clear a specific account from the hashtable
 void hash_delete(Hashtable *ht, char *id) {
   int n = ht->tables;
@@ -50,7 +69,7 @@ void hash_destroy(Hashtable *ht) {
   // free(ht);
 }
 
-//  Get a graph with the specified id
+//  Get a tnode with the specified id
 tnode *hash_getBucket(Hashtable *ht, char *id) {
   int n = ht->tables;
   int bucket = hash_fillBucket(n, id);
@@ -79,12 +98,11 @@ int hash_search(Hashtable *ht, char *id) {
 
 //  Return the bucket in which the new item has to be added
 int hash_fillBucket(int table_len, char *id) {
-  int i = 0;
-  int table = 0;
+  unsigned long hash = 5381;
+  int c;
 
-  for(i = 0; i < table_len; id++, i++) {
-    table = (*id) + (table << 6) + (table << 16) - table;
-  }
+  while (c = *id++)
+    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
-   return table;
+  return hash%table_len;
 }
